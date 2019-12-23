@@ -16,14 +16,15 @@ logger = logging.getLogger()
 load_dotenv()
 
 TOKEN = os.getenv('TOSHL_TOKEN')
-session = requests.Session()
-session.auth = (TOKEN, '')
+r = requests.Session()
+r.auth = (TOKEN, '')
 
 
 def similar(a, b):
     logger.debug('Before split: %s, %s', a, b)
     a, b = a.split('\n')[0], b.split('\n')[0]
-    similarity = SequenceMatcher(isjunk=None, a=a.split('\n')[0], b=b.split('\n')[0]).ratio()
+    logger.debug('After split: %s, %s', a, b)
+    similarity = SequenceMatcher(isjunk=None, a=a, b=b).ratio()
     return similarity
 
 
@@ -39,12 +40,12 @@ def ask_to_delete(_id):
 def delete_entry(_id):
     url = f'{TOSHL_URL}/entries/{_id}'
     logger.debug(url)
-    session.delete(url)
+    r.delete(url)
 
 
 def get_entries(page=0):
-    return session.get(f'{TOSHL_URL}/entries',
-                       params={'from': '2018-01-01', 'to': str(datetime.date.today()), 'page': page})
+    return r.get(f'{TOSHL_URL}/entries',
+                 params={'from': '2018-01-01', 'to': str(datetime.date.today()), 'page': page})
 
 
 def get_all_entries():
