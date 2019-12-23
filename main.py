@@ -1,16 +1,19 @@
+import concurrent
 import datetime
 import logging
 import os
+import threading
 from collections import defaultdict
+from concurrent.futures.thread import ThreadPoolExecutor
 from difflib import SequenceMatcher
-from typing import Dict, Tuple, List
+from typing import Dict, List
 
 import requests
 from dotenv import load_dotenv
 
 TOSHL_URL = 'https://api.toshl.com'
 
-logging.basicConfig(level=logging.INFO, format='[%(asctime)-15s]: %(message)s')
+logging.basicConfig(level=logging.INFO, format='[%(threadName)s %(pathname)s %(levelname)s]: %(message)s')
 logger = logging.getLogger()
 
 load_dotenv()
@@ -45,7 +48,7 @@ def delete_entry(_id):
 
 def get_entries(page=0):
     return r.get(f'{TOSHL_URL}/entries',
-                 params={'from': '2018-01-01', 'to': str(datetime.date.today()), 'page': page})
+                 params={'from': '2018-01-01', 'to': str(datetime.date.today()), 'page': page, 'include_deleted': True})
 
 
 def get_all_entries():
@@ -64,7 +67,7 @@ def get_all_entries():
 
 def find_duplicates(entries) -> List[List[Dict]]:
     counter = defaultdict(list)
-    for _id, entry in entries.items():
+    for entry in entries.values():
         entry_key = entry['amount'], entry['date']
         existing_entry = counter.get(entry_key)
         if existing_entry:
@@ -97,10 +100,65 @@ def delete_visa(entries_by_id):
             ask_to_delete(_id)
 
 
+def create_tags_mapping(entries):
+    relevant_entries = [entry for entry in entries.values()
+                        if entry['date'] >= '2019-09-01'
+                        and all(name not in entry['desc'] for name in ['העברה', 'הע.', 'שיק', 'כספו'])
+                        and 'tags' in entry]
+    tag_mapping = defaultdict(set)
+    for entry in relevant_entries:
+        tag_mapping[entry['tags'][0], entry['category']].add(entry['desc'].split('\n')[0])
+    return tag_mapping
+
+
+def update_entries_tags(entries, tag_mapping):
+    relevant_entries = [entry for entry in entries.values()
+                        if entry['date'] < '2019-09-01'
+                        and 'transaction' not in entry]
+    for entry in relevant_entries:
+        for key, desc in tag_mapping.items():
+            if entry['desc'] in desc:
+                entry['tags'] = [key[0]]
+                entry['category'] = key[1]
+                yield entry
+
+
+def update_entry(entry):
+    refreshed_entity = r.get(f'{TOSHL_URL}/entries/{entry["id"]}').json()
+    entry['modified'] = refreshed_entity['modified']
+    response = r.put(f'{TOSHL_URL}/entries/{entry["id"]}', json=entry)
+    logger.info(f'Done for {entry["id"]}')
+    try:
+        response.raise_for_status()
+    except:
+        logger.exception(f'Failed to update entry {entry["id"]}')
+
+def create_entry(entry):
+    del entry['deleted']
+    response = r.post(f'{TOSHL_URL}/entries', json=entry)
+    logger.info(f'Done for {entry["id"]}')
+    try:
+        response.raise_for_status()
+    except:
+        logger.exception(f'Failed to update entry {entry["id"]}')
+
+def recreated_delete_entries(entries):
+    relevant_entries = [entry for entry in entries.values()
+                        if entry['date'] >= '2019-12-01'
+                        and entry['deleted']]
+    return relevant_entries
+
 def main():
     entries: Dict[str, Dict] = get_all_entries()
-    delete_duplicates(entries)
-    delete_visa(entries)
+    # tag_mapping = create_tags_mapping(entries)
+    # newly_tag_entries = list(update_entries_tags(entries, tag_mapping))
+    #
+    # with ThreadPoolExecutor(max_workers=10) as executor:
+    #     list(executor.map(update_entry, newly_tag_entries))
+
+    # update_entries(newly_tag_entries)
+    # delete_duplicates(entries)
+    # delete_visa(entries)
 
 
 if __name__ == '__main__':
