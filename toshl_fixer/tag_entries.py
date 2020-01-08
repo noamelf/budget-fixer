@@ -14,8 +14,6 @@ logger = logging.getLogger(__name__)
 def map_ids(data):
     with open(DATA_DIR / "mapping.json") as f:
         mapping = json.load(f)
-    del mapping["categories"]["unsorted"]
-    del mapping["categories"]["Reconciliation"]
     return data.replace({"est_cat": mapping["categories"], "est_tag": mapping["tags"]})
 
 
