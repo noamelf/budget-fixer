@@ -15,5 +15,6 @@ poetry install
 
 ```shell script
 export TOSHL_TOKEN="YOUR-TOKEN"
-poetry run python main.py
+poetry run python -m toshl_fixer.fetch_data
+poetry run python -m toshl_fixer.tag_entries
 ```
