@@ -1,15 +1,21 @@
 [tool.poetry]
-name = "toshlpy"
+name = "toshl-fixer"
 version = "0.1.0"
 description = "Hacking Toshl scripts"
 authors = ["Noam Elfanbaum <noam.elf@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.8"
 requests = "^2.22.0"
 python-dotenv = "^0.10.3"
 toshl = "git+https://github.com/noamelf/toshl-python.git"
+prompt-toolkit = "2.0.10"
+scikit-learn = "0.22.1"
+nltk = "3.4.5"
+pandas = "0.25.3"
+
 [tool.poetry.dev-dependencies]
+#black = "19.10b0"
 
 [build-system]
 requires = ["poetry>=0.12"]
