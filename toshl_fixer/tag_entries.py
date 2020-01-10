@@ -5,8 +5,8 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
 
 from toshl_fixer.utils.expense import Mapping
-from .classifiers import tfidf_tree
 from .classifiers import naive_bayes
+from .classifiers import tfidf_tree
 from .utils import expense as expense_utils
 
 logger = logging.getLogger(__name__)
@@ -72,5 +72,9 @@ def update_tags(from_date=None, to_date=None):
     expenses.apply(update_if_high_prediction, axis=1)
 
 
+def run():
+    update_tags()
+
+
 if __name__ == "__main__":
-    update_tags(from_date="2019-10-01", to_date="2019-10-31")
+    run()

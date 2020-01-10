@@ -67,7 +67,7 @@ def dump_cat_and_tags_mapping(categories, tags):
         json.dump(mapping, f, indent=4, sort_keys=True)
 
 
-def main(from_date, to_date, filter_empty_tags):
+def main(from_date="2019-01-01", to_date="2020-01-31", filter_empty_tags=False):
     categories, tags, entries = fetch_data(from_date, to_date)
     expenses = filter_expenses(entries, filter_empty_tags)
     labeled_expenses = merge_labels(expenses, categories, tags)
@@ -75,5 +75,9 @@ def main(from_date, to_date, filter_empty_tags):
     dump_cat_and_tags_mapping(categories, tags)
 
 
-if __name__ == "__main__":
+def run():
     main(from_date="2019-01-01", to_date="2020-01-31", filter_empty_tags=False)
+
+
+if __name__ == "__main__":
+    run()
