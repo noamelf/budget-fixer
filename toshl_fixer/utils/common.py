@@ -12,7 +12,7 @@ load_dotenv()
 
 TOKEN = os.getenv('TOSHL_TOKEN')
 client = ToshlClient(TOKEN)
-DATA_DIR = Path(os.path.abspath(__file__)).parent / 'data'
+DATA_DIR = Path(os.path.abspath(__file__)).parent.parent / 'data'
 
 
 def csv_name(from_date, to_date):

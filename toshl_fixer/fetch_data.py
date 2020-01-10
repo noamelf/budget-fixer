@@ -3,7 +3,7 @@ import json
 import pandas as pd
 
 from toshl import Category, Tag, Entry
-from .common import client, DATA_DIR, csv_name
+from .utils.common import client, DATA_DIR
 
 
 def name_categories(expenses, categories):
@@ -37,7 +37,7 @@ def fetch_data(from_date, to_date):
 
 
 def filter_expenses(entries, filter_empty_tags=True):
-    relevant = entries[["id", "desc", "amount", "category", "tags"]]
+    relevant = entries[["id", "desc", "amount", "category", "tags", 'date']]
     relevant["desc"] = relevant["desc"].str.split(pat="\n").str[0]
     filtered = relevant.drop(relevant[relevant.desc == ""].index)
     filtered = filtered.drop(filtered[filtered.amount > 0].index)
@@ -54,8 +54,8 @@ def merge_labels(expenses, categories, tags):
     return merged
 
 
-def write_to_csv(expenses, from_date, to_date):
-    expenses.to_csv(DATA_DIR / csv_name(from_date, to_date), index=False)
+def write_to_csv(expenses):
+    expenses.to_csv(DATA_DIR / 'expenses.csv', index=False)
 
 
 def dump_cat_and_tags_mapping(categories, tags):
@@ -71,11 +71,9 @@ def main(from_date, to_date, filter_empty_tags):
     categories, tags, entries = fetch_data(from_date, to_date)
     expenses = filter_expenses(entries, filter_empty_tags)
     labeled_expenses = merge_labels(expenses, categories, tags)
-    write_to_csv(labeled_expenses, from_date, to_date)
+    write_to_csv(labeled_expenses)
     dump_cat_and_tags_mapping(categories, tags)
 
 
 if __name__ == "__main__":
-    main(from_date="2019-11-01", to_date="2019-11-31", filter_empty_tags=False)
-
-pass
+    main(from_date="2019-01-01", to_date="2020-01-31", filter_empty_tags=False)

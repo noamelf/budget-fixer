@@ -1,7 +1,6 @@
 import nltk
-import pandas as pd
 
-from .common import DATA_DIR, csv_name
+from ..utils import expense as expense_utils
 
 
 class Classifier:
@@ -15,7 +14,7 @@ class Classifier:
         return {word: True for word in desc.upper().split()}
 
     def train_classifier(self):
-        training_data = pd.read_csv(DATA_DIR / csv_name(from_date=self.from_date, to_date=self.to_date))
+        training_data = expense_utils.get_expenses(from_date=self.from_date, to_date=self.to_date)
         training_set = [
             (self.to_dict(row["desc"]), (row["category"], row["tag"])) for i, row in training_data.iterrows()
         ]  # Convert the data to NLTK format
