@@ -14,7 +14,7 @@ def get_expenses(from_date=None, to_date=None):
     df = pd.read_csv(ALL_EXPENSES_PATH)
     df = df.fillna("missing")
     if from_date and to_date:
-        return df[(df.date > from_date) & (df.date < to_date)]
+        return df[(df.date >= from_date) & (df.date <= to_date)]
     return df
 
 

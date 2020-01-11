@@ -48,6 +48,17 @@ def update_rt_expense_tags(category, expense, tag):
     write_real_time_tagged_expense(expense['id', 'desc', 'amount', 'date', 'category', 'tag'])
 
 
+def manual_input(expense):
+    mapping = LabelMapping.create_from_local_copy()
+    tags_completer = FuzzyWordCompleter(mapping.tags)
+    category_completer = FuzzyWordCompleter(mapping.categories)
+    if category := prompt("Enter category: ", completer=category_completer, search_ignore_case=True):
+        if tag := prompt("Enter tag: ", completer=tags_completer, search_ignore_case=True):
+            logger.info('Updating manual choice')
+            update_toshl(expense['id'], category=category, tag=tag)
+            # update_rt_expense_tags(category, expense, tag)
+
+
 def update_tags_in_toshl(expense):
     options = {
         "1": "skip",
@@ -75,17 +86,6 @@ def update_tags_in_toshl(expense):
         update_toshl(expense['id'], category=expense['tt_category'], tag=expense['tt_tag'])
     elif response == '4':
         manual_input(expense)
-
-
-def manual_input(expense):
-    mapping = LabelMapping.create_from_local_copy()
-    tags_completer = FuzzyWordCompleter(mapping.tags)
-    category_completer = FuzzyWordCompleter(mapping.categories)
-    if category := prompt("Enter category: ", completer=category_completer, search_ignore_case=True):
-        if tag := prompt("Enter tag: ", completer=tags_completer, search_ignore_case=True):
-            logger.info('Updating manual choice')
-            update_toshl(expense['id'], category=category, tag=tag)
-            # update_rt_expense_tags(category, expense, tag)
 
 
 def update_tags(from_date, to_date):
