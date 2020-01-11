@@ -12,13 +12,13 @@ python = "^3.8.0"
 python-dotenv = "0.10.3"
 scikit-learn = "0.22.1"
 toshl = { git = "https://github.com/noamelf/toshl-python.git", branch = "master" }
+click = "^7.0"
 
 [tool.poetry.dev-dependencies]
 #black = "19.10b0"
 
 [tool.poetry.scripts]
-toshl.fetch = 'toshl_fixer.fetch_data:run'
-toshl.tag = 'toshl_fixer.tag_entries:run'
+toshl-fixer = 'toshl_fixer.cli:cli'
 
 [build-system]
 requires = ["poetry>=0.12"]

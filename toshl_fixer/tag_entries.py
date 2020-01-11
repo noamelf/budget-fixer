@@ -2,12 +2,14 @@ import logging
 from functools import partial
 
 from prompt_toolkit import prompt
-from prompt_toolkit.completion import FuzzyWordCompleter
+from prompt_toolkit.completion import FuzzyWordCompleter, WordCompleter
 
-from toshl_fixer.utils.expense import Mapping
+from toshl_fixer.data import expenses as expense_utils
+from toshl_fixer.data.expenses import write_real_time_tagged_expense
+from toshl_fixer.toshl.labels import LabelMapping
 from .classifiers import naive_bayes
 from .classifiers import tfidf_tree
-from .utils import expense as expense_utils
+from .toshl.update import update_toshl
 
 logger = logging.getLogger(__name__)
 
@@ -41,40 +43,54 @@ def tag_tfidf_tree(expenses):
     return expenses
 
 
-def update_if_high_prediction(expense):
-    mapping = Mapping()
-    tags_completer = FuzzyWordCompleter(mapping.tags)
-    category_completer = FuzzyWordCompleter(mapping.categories)
+def update_rt_expense_tags(category, expense, tag):
+    expense['category'] = category
+    expense['tag'] = tag
+    write_real_time_tagged_expense(expense['id', 'desc', 'amount', 'date', 'category', 'tag'])
+
+
+def update_tags_in_toshl(expense):
+    options = {
+        "1": "skip",
+        "2": "Use NB",
+        "3": "Use TT",
+        "4": "Tag manually",
+    }
+    choice = WordCompleter(options)
 
     logger.info(expense)
+
     if expense["nb_probability"] > 0.5:
         logger.info(f"Tagging automatically due to high nb probability")
-        send_to_toshl(expense['id'], expense['nb_category'], expense['nb_tag'])
-    elif expense["nb_probability"] > 0.3 and expense["nb_category"] == expense["tt_category"]:
-        logger.info(f"NB and TT category are the same")
-        response = input("Do you want me to auto tag it? [y/n]")
-        if response == 'y':
-            send_to_toshl(expense['id'], expense['tt_category'], expense['tt_tag'])
-    else:
-        if category := prompt("Enter category: ", completer=category_completer, search_ignore_case=True):
-            if tag := prompt("Enter tag: ", completer=tags_completer, search_ignore_case=True):
-                send_to_toshl(expense['id'], category, tag)
+        update_toshl(expense['id'], category=expense['nb_category'], tag=expense['nb_tag'])
+        return
+
+    response = prompt("Choose option: ", completer=choice)
+    if response == '1':
+        return
+    elif response == '2':
+        logger.info('Using naive-bayes prediction')
+        update_toshl(expense['id'], category=expense['nb_category'], tag=expense['nb_tag'])
+    elif response == '3':
+        logger.info('Using tfidf tree prediction')
+        update_toshl(expense['id'], category=expense['tt_category'], tag=expense['tt_tag'])
+    elif response == '4':
+        manual_input(expense)
 
 
-def send_to_toshl(entry_id, category, tag):
-    expense_utils.update_toshl(entry_id, category=category, tag=tag)
+def manual_input(expense):
+    mapping = LabelMapping.create_from_local_copy()
+    tags_completer = FuzzyWordCompleter(mapping.tags)
+    category_completer = FuzzyWordCompleter(mapping.categories)
+    if category := prompt("Enter category: ", completer=category_completer, search_ignore_case=True):
+        if tag := prompt("Enter tag: ", completer=tags_completer, search_ignore_case=True):
+            logger.info('Updating manual choice')
+            update_toshl(expense['id'], category=category, tag=tag)
+            # update_rt_expense_tags(category, expense, tag)
 
 
-def update_tags(from_date=None, to_date=None):
+def update_tags(from_date, to_date):
     expenses = expense_utils.get_expenses(from_date, to_date)
     expenses = tag_naive_bayes(expenses)
     expenses = tag_tfidf_tree(expenses)
-    expenses.apply(update_if_high_prediction, axis=1)
-
-
-def run():
-    update_tags()
-
-
-if __name__ == "__main__":
-    run()
+    expenses.apply(update_tags_in_toshl, axis=1)

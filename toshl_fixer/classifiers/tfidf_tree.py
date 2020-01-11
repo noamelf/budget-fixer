@@ -2,7 +2,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.tree import DecisionTreeClassifier
 
-from toshl_fixer.utils.expense import get_expenses
+from toshl_fixer.data.expenses import get_training_expenses
+from toshl_fixer.settings import MANUALLY_TAGGED_FROM_DATE, MANUALLY_TAGGED_TO_DATE
 
 
 class Classifier:
@@ -12,9 +13,7 @@ class Classifier:
 
     def vectorize_desc(self, data):
         vectorizer = TfidfVectorizer()
-        # vectors = vectorizer.fit_transform(data)
-        vectorizer.fit(data)
-        vectors = vectorizer.transform(data)
+        vectors = vectorizer.fit_transform(data)
         feature_names = vectorizer.get_feature_names()
         dense = vectors.todense()
         denselist = dense.tolist()
@@ -26,8 +25,8 @@ class Classifier:
         df["id"] = data["id"]
         return df
 
-    def train_classifier(self, from_date="2019-12-01", to_date="2019-12-31"):
-        expenses = get_expenses()
+    def train_classifier(self, from_date=MANUALLY_TAGGED_FROM_DATE, to_date=MANUALLY_TAGGED_TO_DATE):
+        expenses = get_training_expenses()
         vector = self.create_vector(expenses)
         self._vector = vector
 
