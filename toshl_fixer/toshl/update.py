@@ -1,6 +1,6 @@
 from toshl import Entry
 from .labels import LabelMapping
-from toshl_fixer.settings import client
+from ..settings import client
 
 
 def update_toshl(entry_id, **updates):

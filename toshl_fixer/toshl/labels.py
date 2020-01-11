@@ -1,6 +1,6 @@
 from toshl import Category, Tag
-from toshl_fixer.settings import client
 from ..data import labels
+from ..settings import client
 
 
 class LabelMapping:

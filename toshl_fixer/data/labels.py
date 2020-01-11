@@ -1,6 +1,6 @@
 import json
 
-from toshl_fixer.settings import DATA_DIR
+from ..settings import DATA_DIR
 
 MAPPING_PATH = DATA_DIR / 'mapping.json'
 

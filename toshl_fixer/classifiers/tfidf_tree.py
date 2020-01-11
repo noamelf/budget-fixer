@@ -2,8 +2,8 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.tree import DecisionTreeClassifier
 
-from toshl_fixer.data.expenses import get_training_expenses
-from toshl_fixer.settings import MANUALLY_TAGGED_FROM_DATE, MANUALLY_TAGGED_TO_DATE
+from ..data.expenses import get_training_expenses
+from ..settings import MANUALLY_TAGGED_FROM_DATE, MANUALLY_TAGGED_TO_DATE
 
 
 class Classifier:

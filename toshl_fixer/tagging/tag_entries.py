@@ -4,12 +4,11 @@ from functools import partial
 from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter, WordCompleter
 
-from toshl_fixer.data import expenses as expense_utils
-from toshl_fixer.data.expenses import write_real_time_tagged_expense
-from toshl_fixer.toshl.labels import LabelMapping
-from .classifiers import naive_bayes
-from .classifiers import tfidf_tree
-from .toshl.update import update_toshl
+from ..classifiers import naive_bayes
+from ..classifiers import tfidf_tree
+from ..data.expenses import write_real_time_tagged_expense, get_expenses
+from ..toshl.labels import LabelMapping
+from ..toshl.update import update_toshl
 
 logger = logging.getLogger(__name__)
 
@@ -90,7 +89,7 @@ def manual_input(expense):
 
 
 def update_tags(from_date, to_date):
-    expenses = expense_utils.get_expenses(from_date, to_date)
+    expenses = get_expenses(from_date, to_date)
     expenses = tag_naive_bayes(expenses)
     expenses = tag_tfidf_tree(expenses)
     expenses.apply(update_tags_in_toshl, axis=1)

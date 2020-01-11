@@ -2,7 +2,7 @@ import logging
 
 import pandas as pd
 
-from toshl_fixer.settings import MANUALLY_TAGGED_TO_DATE, MANUALLY_TAGGED_FROM_DATE, DATA_DIR
+from ..settings import MANUALLY_TAGGED_TO_DATE, MANUALLY_TAGGED_FROM_DATE, DATA_DIR
 
 logger = logging.getLogger(__name__)
 

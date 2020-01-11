@@ -3,9 +3,8 @@ from functools import partial
 import pandas as pd
 
 from toshl import Entry
-from toshl_fixer.settings import client
 from .labels import LabelMapping
-
+from ..settings import client
 
 
 def convert_id_to_name(expense, mapping: LabelMapping):
