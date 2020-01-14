@@ -157,10 +157,9 @@ version = "0.0.4"
 requests = "2.9.1"
 
 [package.source]
-reference = "3f5786c39db188fb0408fa83f451f7f4b430b38d"
+reference = "6d6cdbc7c8a38e9ecc7355ca1430af38801bd24b"
 type = "git"
 url = "https://github.com/noamelf/toshl-python.git"
-
 [[package]]
 category = "main"
 description = "Measures number of Terminal column cells of wide-character codes"
@@ -170,7 +169,7 @@ python-versions = "*"
 version = "0.1.8"
 
 [metadata]
-content-hash = "fd05515dd8e1dc1647c907e374959b3a7da8f54435b4e09b4f9ef71cd97679f4"
+content-hash = "cbbf5e853f3fe4ba87be5fca8e0509157e4877d4e31c4f818a6ee0849a8d34b4"
 python-versions = "^3.8.0"
 
 [metadata.files]

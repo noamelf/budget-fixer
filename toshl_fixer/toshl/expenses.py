@@ -9,7 +9,7 @@ from ..settings import client
 
 def convert_id_to_name(expense, mapping: LabelMapping):
     expense['tag'] = mapping.get_tag_name_from_id(expense['tag'])
-    expense['category'] = mapping.get_tag_name_from_id(expense['category'])
+    expense['category'] = mapping.get_category_name_from_id(expense['category'])
     return expense
 
 

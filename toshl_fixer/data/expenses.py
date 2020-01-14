@@ -18,6 +18,11 @@ def get_expenses(from_date=None, to_date=None):
     return df
 
 
+def get_not_tagged_expenses(from_date=None, to_date=None):
+    expenses = get_expenses(from_date, to_date)
+    return expenses[~expenses.desc.str.contains('🏷')]
+
+
 def get_training_expenses(from_date=None, to_date=None):
     df: pd.DataFrame = get_expenses(from_date=from_date, to_date=to_date)
     rt_expenses = load_real_time_tagged_expense()

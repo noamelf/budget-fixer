@@ -8,7 +8,8 @@ def update_toshl(entry_id, **updates):
     mapping = LabelMapping.create_from_local_copy()
     if "tag" in updates:
         tag_id = mapping.get_tag_id(updates["tag"])
-        updates["tag"] = [tag_id] if tag_id else []
+        updates["tags"] = [tag_id] if tag_id else []
+        del updates['tag']
     if "category" in updates:
         updates["category"] = mapping.get_category_id(updates["category"])
 
