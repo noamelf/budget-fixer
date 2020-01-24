@@ -18,3 +18,11 @@ export TOSHL_TOKEN="YOUR-TOKEN"
 poetry run python -m toshl_fixer.fetch_data
 poetry run python -m toshl_fixer.tag_entries
 ```
+
+### TODO
+
+-[ ] Finish tagging nov
+-[ ] Train november
+-[ ] Tag october
+-[ ] Remove duplicate entries
+-[ ] Remove false entry - visa

@@ -15,8 +15,8 @@ class Classifier:
         training_data = expenses.get_tagged_training_expenses()
         training_set = [
             (self.to_dict(row["desc"]), (row["category"], row["tag"])) for i, row in training_data.iterrows()
-        ]  # Convert the db to NLTK format
-        self.classifier = nltk.NaiveBayesClassifier.train(training_set)  # Train the classifier
+        ]
+        self.classifier = nltk.NaiveBayesClassifier.train(training_set)
 
     def infer(self, desc):
         features = self.to_dict(desc)

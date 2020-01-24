@@ -15,6 +15,7 @@ scikit-learn = "0.22.1"
 toshl = { git = "https://github.com/noamelf/toshl-python.git", branch = "master" }
 
 [tool.poetry.dev-dependencies]
+ipdb = "*"
 #black = "19.10b0"
 
 [tool.poetry.scripts]

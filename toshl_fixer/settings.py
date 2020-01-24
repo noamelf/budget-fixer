@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 from toshl.client import ToshlClient
 
 logging.basicConfig(level=logging.INFO, format='[%(pathname)s %(levelname)s]: %(message)s')
-logging.getLogger("requests").setLevel(logging.WARNING)
 
 load_dotenv()
 

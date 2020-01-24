@@ -10,7 +10,7 @@ ALL_EXPENSES_PATH = DATA_DIR / 'expenses.csv'
 RT_EXPENSES_PATH = DATA_DIR / 'rt_tagging.csv'
 
 
-def get_expenses(from_date=None, to_date=None):
+def get_expenses(from_date=None, to_date=None) -> pd.DataFrame:
     df = pd.read_csv(ALL_EXPENSES_PATH)
     df = df.fillna("missing")
     if from_date and to_date:

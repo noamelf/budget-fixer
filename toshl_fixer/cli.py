@@ -1,41 +1,48 @@
-import asyncio
-
 import click
 
+from toshl_fixer.core.delete_credit_entries import delete_credit_entries
+from toshl_fixer.core.delete_duplicates import delete_duplicates
 from toshl_fixer.core.fetch import fetch_data
 from .core.tag import update_tags
 
 
+@click.group(chain=True)
+@click.option(
+    "--from-date", required=False, help="Date to start from (e.g. 2019-12-01)"
+)
+@click.option("--to-date", required=False, help="Up to date (e.g. 2019-12-30)")
+@click.pass_context
+def cli(context, from_date, to_date):
+    context.obj = {'from_date': from_date, 'to_date': to_date}
+
+
 @click.command()
-@click.option(
-    "--from-date", required=True, help="Date to start core from (e.g. 2019-12-01)"
-)
-@click.option("--to-date", required=True, help="Date to tag to (e.g. 2019-12-30)")
-def tag(from_date, to_date):
-    update_tags(from_date, to_date)
+@click.pass_context
+def tag(context):
+    update_tags(**context.obj)
 
 
 @click.command()
-@click.option(
-    "--from-date",
-    default="2019-01-01",
-    help="Date to fetch date from (e.g. 2019-12-01)",
-)
-@click.option(
-    "--to-date", default="2020-12-31", help="Date to fetch data to (e.g. 2019-12-30)"
-)
-def fetch(from_date, to_date):
-    fetch_data(from_date, to_date)
+def fetch():
+    fetch_data()
 
 
-@click.group()
-def cli():
-    pass
+@click.command()
+@click.pass_context
+def delete_dup(context):
+    delete_duplicates(**context.obj)
+
+
+@click.command()
+@click.pass_context
+def delete_visa(context):
+    delete_credit_entries(**context.obj)
 
 
 cli.add_command(tag)
 cli.add_command(fetch)
+cli.add_command(delete_dup)
+cli.add_command(delete_visa)
 
 if __name__ == "__main__":
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(cli())
+    cli()
