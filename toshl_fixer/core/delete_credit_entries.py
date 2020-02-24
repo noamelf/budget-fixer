@@ -8,7 +8,7 @@ def delete_expense(entry):
 
 def delete_credit_entries(from_date, to_date):
     expenses = get_expenses(from_date, to_date)
-    expenses = expenses[expenses['desc'].str.contains('ויזה')]
+    # expenses = expenses[expenses['desc'].str.contains('ויזה')]
     print(expenses)
     if input('Delete entries?') == 'y':
         expenses.apply(delete_expense, axis=1)

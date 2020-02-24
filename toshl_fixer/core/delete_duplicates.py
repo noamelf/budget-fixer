@@ -1,7 +1,5 @@
 import logging
-from collections import defaultdict
 from difflib import SequenceMatcher
-from typing import List, Dict
 
 import pandas as pd
 
@@ -12,7 +10,13 @@ logger = logging.getLogger(__name__)
 
 
 def delete_expense(entry):
-    delete_entry_async(entry["id"])
+    logger.info(f'{entry}')
+    if entry['score'] > 0.6:
+        delete_entry_async(entry["id"])
+
+
+def similar(row):
+    return SequenceMatcher(isjunk=None, a=row['desc_x'], b=row['desc_y']).ratio()
 
 
 def delete_duplicates(from_date, to_date):
@@ -20,6 +24,6 @@ def delete_duplicates(from_date, to_date):
     expenses = expenses[expenses.duplicated(subset=['amount', 'date'], keep=False)]
     merged = expenses.merge(right=expenses, on=['amount', 'date'])
     merged: pd.DataFrame = merged[merged['id_x'] != merged['id_y']]
-    for _, row in merged.iloc[::2, :].iterrows():
-        if input(f'{row}\n\nDelete expense? ') == 'y':
-            delete_entry_async(row["id_x"])
+    merged = merged.iloc[::2, :]
+    merged['score'] = merged.apply(similar, axis=1)
+    merged.apply(delete_expense, axis=1)
