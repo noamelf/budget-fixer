@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 def delete_expense(entry):
     logger.info(f'{entry}')
     if entry['score'] > 0.6:
-        delete_entry_async(entry["id"])
+        delete_entry_async(entry["id_x"])
 
 
 def similar(row):
