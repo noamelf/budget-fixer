@@ -7,8 +7,11 @@ COPY pyproject.toml poetry.lock .env ./
 
 RUN pip install poetry
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-dev --no-interaction --no-ansi
+    && poetry install
 
 COPY toshl_fixer toshl_fixer
+
+# To install cli
+RUN poetry install
 
 CMD gunicorn --bind :${PORT-8080} --workers 1 --threads 8 toshl_fixer.app:app

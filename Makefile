@@ -1,10 +1,10 @@
 COMMIT:=$(shell git rev-parse --verify --short HEAD)
 
 build:
-	docker build -t gcr.io/toshl-fixer/toshl-fixer:$(COMMIT) .
+	docker build -t toshl-fixer -t gcr.io/toshl-fixer/toshl-fixer -t gcr.io/toshl-fixer/toshl-fixer:$(COMMIT) .
 
 push:
-	docker push gcr.io/toshl-fixer/toshl-fixer:$(COMMIT)
+	docker push gcr.io/toshl-fixer/toshl-fixer
 
 deploy:
 	gcloud run deploy toshl-fixer --image gcr.io/toshl-fixer/toshl-fixer:$(COMMIT)
