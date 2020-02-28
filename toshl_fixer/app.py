@@ -11,8 +11,8 @@ app = Flask(__name__)
 
 @app.route('/remove-dup')
 def remove_dup():
-    fetch_data()
-    delete_duplicates('2020-01-01', str(today()))
+    expenses = fetch_data()
+    delete_duplicates('2020-01-01', str(today()), expenses=expenses)
     return 'Done!'
 
 

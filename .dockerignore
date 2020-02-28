@@ -3,5 +3,6 @@ README.md
 *.pyc
 *.pyo
 *.pyd
+*.egg-info
 __pycache__
 .python-version
