@@ -22,7 +22,7 @@ def _filter_expenses(entries):
     entries["desc"] = entries["desc"].str.split(pat="\n").str[0]
     filtered = entries.drop(entries[entries.desc == ""].index)
     filtered = filtered.drop(filtered[filtered.amount > 0].index)
-    return entries
+    return filtered
 
 
 def _adjust_columns(expenses):
