@@ -6,6 +6,7 @@ import mlflow.pyfunc
 import nltk
 import pandas as pd
 import sys
+import yaml
 from sklearn.model_selection import train_test_split
 
 data_file = sys.argv[1] or '../toshl_fixer/db/expenses.csv'
@@ -45,6 +46,9 @@ class ExpensesClassifier(mlflow.pyfunc.PythonModel):
         return model_input.apply(classifier.classify)
 
 
+with open('conda_env.yaml') as f:
+    conda_env = yaml.load(f)
+
 with mlflow.start_run():
     train.to_csv('train-set.csv', index=False)
     test.to_csv('test-set.csv', index=False)
@@ -59,7 +63,7 @@ with mlflow.start_run():
 
     expenses_classifier_path = "expenses_classifier"
     expenses_classifier_model = ExpensesClassifier(classifier)
-    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model)
+    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model, conda_env=conda_env)
     mlflow.pyfunc.log_model(artifact_path=expenses_classifier_path, python_model=expenses_classifier_model)
 
 shutil.rmtree('expenses_classifier')
