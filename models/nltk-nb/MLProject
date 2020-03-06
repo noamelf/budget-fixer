@@ -1,9 +1,6 @@
-name: My Project
+name: Expenses Classifier
 
 conda_env: conda_env.yaml
-# Can have a docker_env instead of a conda_env, e.g.
-# docker_env:
-#    image:  mlflow-docker-example
 
 entry_points:
   main:

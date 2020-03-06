@@ -6,7 +6,6 @@ import mlflow.pyfunc
 import nltk
 import pandas as pd
 import sys
-import yaml
 from sklearn.model_selection import train_test_split
 
 data_file = sys.argv[1] or '../toshl_fixer/db/expenses.csv'
@@ -46,14 +45,13 @@ class ExpensesClassifier(mlflow.pyfunc.PythonModel):
         return model_input.apply(classifier.classify)
 
 
-with open('conda_env.yaml') as f:
-    conda_env = yaml.load(f)
+os.mkdir('artifacts')
 
 with mlflow.start_run():
-    train.to_csv('train-set.csv', index=False)
-    test.to_csv('test-set.csv', index=False)
-    mlflow.log_artifact('train-set.csv')
-    mlflow.log_artifact('test-set.csv')
+    train.to_csv('artifacts/train-set.csv', index=False)
+    test.to_csv('artifacts/test-set.csv', index=False)
+    mlflow.log_artifact('artifacts/train-set.csv')
+    mlflow.log_artifact('artifacts/test-set.csv')
 
     classifier = nltk.NaiveBayesClassifier.train(train_set)
 
@@ -61,11 +59,14 @@ with mlflow.start_run():
     print(f'{accuracy=}')
     mlflow.log_metric("accuracy", accuracy)
 
+    # breakpoint()
+
     expenses_classifier_path = "expenses_classifier"
     expenses_classifier_model = ExpensesClassifier(classifier)
-    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model, conda_env=conda_env)
-    mlflow.pyfunc.log_model(artifact_path=expenses_classifier_path, python_model=expenses_classifier_model)
+    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model,
+                             conda_env='conda_env.yaml')
+    mlflow.pyfunc.log_model(artifact_path=expenses_classifier_path, python_model=expenses_classifier_model,
+                            conda_env='conda_env.yaml')
 
+shutil.rmtree('artifacts')
 shutil.rmtree('expenses_classifier')
-os.remove('test-set.csv')
-os.remove('train-set.csv')
