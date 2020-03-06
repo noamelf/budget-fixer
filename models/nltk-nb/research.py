@@ -1,13 +1,14 @@
 # %%
+import mlflow.pyfunc
 import nltk
 import pandas as pd
+import sys
 from sklearn.model_selection import train_test_split
-from toshl_fixer.data.expenses import get_expenses
-import mlflow
 
+data_file = sys.argv[1] or '/home/noam/code/toshl-fixer/toshl_fixer/db/expenses.csv'
 # %%
-
-expenses = get_expenses()
+expenses = pd.read_csv(data_file)
+# expenses = get_expenses()
 
 # %%
 expenses['label'] = expenses['category'] + '/' + expenses['tag']
@@ -15,6 +16,8 @@ expenses['desc'] = expenses['desc'].str.strip('🏷')
 expenses = expenses[expenses['amount'] < 0]
 
 data_set = expenses[['desc', 'label']]
+data_set = data_set.astype('str')
+data_set = data_set.dropna()
 
 # %%
 train, test = train_test_split(data_set, test_size=0.2)
@@ -50,3 +53,10 @@ with mlflow.start_run():
     mlflow.log_artifact('test-set.csv')
 
 
+    class ExpensesClassifier(mlflow.pyfunc.PythonModel):
+
+        def predict(self, context, model_input):
+            return model_input.classify()
+
+
+    mlflow.pyfunc.save_model(path="expenses_classifier", python_model=ExpensesClassifier())
