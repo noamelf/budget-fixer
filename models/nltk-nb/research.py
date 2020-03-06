@@ -55,8 +55,14 @@ with mlflow.start_run():
 
     class ExpensesClassifier(mlflow.pyfunc.PythonModel):
 
+        def __init__(self, model):
+            self.model = model
+
         def predict(self, context, model_input):
-            return model_input.classify()
+            return model_input.apply(classifier.classify)
 
 
-    mlflow.pyfunc.save_model(path="expenses_classifier", python_model=ExpensesClassifier())
+    expenses_classifier_path = "expenses_classifier"
+    expenses_classifier_model = ExpensesClassifier(classifier)
+    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model)
+    mlflow.pyfunc.log_model(expenses_classifier_path, expenses_classifier_model)
