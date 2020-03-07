@@ -1,4 +1,4 @@
-name: toshl-fixer.nltk-nb
+name: toshl-fixer.expense-classifier
 channels:
   - conda-forge
 dependencies:

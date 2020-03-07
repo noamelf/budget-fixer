@@ -6,4 +6,4 @@ entry_points:
   main:
     parameters:
       data_file: path
-    command: "python research.py {data_file}"
+    command: "python -m expense_classifier.train {data_file}"
