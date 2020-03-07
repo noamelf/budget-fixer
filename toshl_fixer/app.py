@@ -3,6 +3,7 @@ import os
 from dateutil.utils import today
 from flask import Flask
 
+from toshl_fixer.core.auto_tag import auto_tag
 from toshl_fixer.core.delete_duplicates import delete_duplicates
 from toshl_fixer.core.fetch import fetch_data
 
@@ -13,6 +14,12 @@ app = Flask(__name__)
 def remove_dup():
     expenses = fetch_data()
     delete_duplicates('2020-01-01', str(today()), expenses=expenses)
+    return 'Done!'
+
+
+@app.route('/tag')
+def remove_dup():
+    auto_tag()
     return 'Done!'
 
 

@@ -16,3 +16,5 @@ DATA_DIR = Path(os.path.abspath(__file__)).parent / 'db'
 
 TOKEN = os.getenv('TOSHL_TOKEN')
 client = ToshlClient(TOKEN)
+
+EXPENSE_CLASSIFIER_URL = os.getenv('EXPENSE_CLASSIFIER_URL')
