@@ -1,22 +1,22 @@
+import atexit
 import shutil
 
 import mlflow.pyfunc
 import nltk
 
-from .settings import MODEL_NAME
 from .mlflow_helpers import ExpensesClassifier
 from .prepare_data_set import get_data_sets
+from .settings import ARTIFACT_PATH
 
 
 def save_model(classifier):
     model_args = {
-        'path': MODEL_NAME,
         'python_model': ExpensesClassifier(classifier),
         'conda_env': 'conda_env.yaml'
     }
 
-    mlflow.pyfunc.save_model(**model_args)
-    mlflow.pyfunc.log_model(**model_args)
+    mlflow.pyfunc.save_model(path=ARTIFACT_PATH, **model_args)
+    mlflow.pyfunc.log_model(artifact_path=ARTIFACT_PATH, **model_args)
 
 
 def train_model():
@@ -29,12 +29,15 @@ def train_model():
 
 
 def cleanup():
-    shutil.rmtree('artifacts')
-    shutil.rmtree('expenses_classifier')
+    shutil.rmtree(ARTIFACT_PATH)
 
 
 def train():
+    atexit.register(cleanup)
     with mlflow.start_run():
         classifier = train_model()
         save_model(classifier)
-    cleanup()
+
+
+if __name__ == '__main__':
+    train()

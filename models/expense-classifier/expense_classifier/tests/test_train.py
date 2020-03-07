@@ -1,7 +1,9 @@
 import mlflow.pyfunc
 import pandas as pd
 
-loaded_model = mlflow.pyfunc.load_model(expenses_classifier_path)
+from ..settings import ARTIFACT_PATH
 
-test_predictions = loaded_model.predict(pd.DataFrame({'desc': train_x}))
+loaded_model = mlflow.pyfunc.load_model(ARTIFACT_PATH)
+
+test_predictions = loaded_model.predict(pd.DataFrame({'desc': 'HOME MADE'}))
 print(test_predictions)

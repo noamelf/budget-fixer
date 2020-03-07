@@ -1,1 +1,1 @@
-MODEL_NAME = 'expenses_classifier'
+ARTIFACT_PATH = 'expense_classifier_model'
