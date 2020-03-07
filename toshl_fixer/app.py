@@ -18,7 +18,7 @@ def remove_dup():
 
 
 @app.route('/tag')
-def remove_dup():
+def tag():
     auto_tag()
     return 'Done!'
 
