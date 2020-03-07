@@ -41,8 +41,13 @@ class ExpensesClassifier(mlflow.pyfunc.PythonModel):
     def __init__(self, model):
         self.model = model
 
-    def predict(self, context, model_input):
-        return model_input.apply(classifier.classify)
+    def _helper(self, row):
+        print(row)
+        values = {word: True for word in row["desc"].upper().split()}
+        return self.model.classify(values)
+
+    def predict(self, context, model_input: pd.DataFrame):
+        return model_input.apply(self._helper, axis=1)
 
 
 os.mkdir('artifacts')
@@ -54,7 +59,6 @@ with mlflow.start_run():
     mlflow.log_artifact('artifacts/test-set.csv')
 
     classifier = nltk.NaiveBayesClassifier.train(train_set)
-
     accuracy = nltk.classify.accuracy(classifier, test_set)
     print(f'{accuracy=}')
     mlflow.log_metric("accuracy", accuracy)
@@ -63,10 +67,22 @@ with mlflow.start_run():
 
     expenses_classifier_path = "expenses_classifier"
     expenses_classifier_model = ExpensesClassifier(classifier)
-    mlflow.pyfunc.save_model(path=expenses_classifier_path, python_model=expenses_classifier_model,
-                             conda_env='conda_env.yaml')
-    mlflow.pyfunc.log_model(artifact_path=expenses_classifier_path, python_model=expenses_classifier_model,
-                            conda_env='conda_env.yaml')
+    mlflow.pyfunc.save_model(
+        path=expenses_classifier_path,
+        python_model=expenses_classifier_model,
+        conda_env='conda_env.yaml')
+    mlflow.pyfunc.log_model(
+        artifact_path=expenses_classifier_path,
+        python_model=expenses_classifier_model,
+        conda_env='conda_env.yaml')
+
+
+# Load the model in `python_function` format
+# loaded_model = mlflow.pyfunc.load_model(expenses_classifier_path)
+#
+# test_predictions = loaded_model.predict(pd.DataFrame({'desc': train_x}))
+# print(test_predictions)
+
 
 shutil.rmtree('artifacts')
 shutil.rmtree('expenses_classifier')
