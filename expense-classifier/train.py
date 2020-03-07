@@ -3,10 +3,27 @@ import shutil
 
 import mlflow.pyfunc
 import nltk
+import pandas as pd
 
-from .mlflow_helpers import ExpensesClassifier
-from .prepare_data_set import get_data_sets
-from .settings import ARTIFACT_PATH
+from prepare_data_set import get_data_sets
+from settings import ARTIFACT_PATH
+
+
+class ExpensesClassifier(mlflow.pyfunc.PythonModel):
+
+    def __init__(self, model):
+        self.model = model
+
+    def _helper(self, row):
+        print(row)
+        values = {word: True for word in row["desc"].upper().split()}
+        classification = self.model.classify(values)
+        probs = self.model.prob_classify(values)
+        probability = probs.prob(classification)
+        return pd.Series([classification, probability], index=['label', 'probability'])
+
+    def predict(self, context, model_input: pd.DataFrame):
+        return model_input.apply(self._helper, axis=1)
 
 
 def save_model(classifier):
