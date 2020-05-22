@@ -8,15 +8,15 @@ Toshl doesn't support checking string similarity for duplicates, so this script 
 ### Install 
 
 ```shell script
-poetry install
+conda create env -f environment.yaml
 ```
 
 ### Run
 
 ```shell script
-export TOSHL_TOKEN="YOUR-TOKEN"
-poetry run python -m toshl_fixer.fetch_data
-poetry run python -m toshl_fixer.tag_entries
+conda activate toshl-fixer
+python -m toshl_fixer.fetch
+python -m toshl_fixer.tag_entries
 ```
 
 ### TODO

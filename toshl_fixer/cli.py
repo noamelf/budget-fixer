@@ -1,8 +1,8 @@
 import click
 
-from toshl_fixer.core.delete_credit_entries import delete_credit_entries
-from toshl_fixer.core.delete_duplicates import delete_duplicates
-from toshl_fixer.core.fetch import fetch_data
+from .core.delete_credit_entries import delete_credit_entries
+from .core.delete_duplicates import delete_duplicates
+from .core.fetch import fetch_data
 from .core.manual_tag import update_tags
 
 
