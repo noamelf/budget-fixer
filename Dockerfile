@@ -1,11 +1,17 @@
-FROM continuumio/miniconda3
+FROM python:3.8
 
-WORKDIR /app
+ENV APP_HOME /app
+WORKDIR $APP_HOME
 
-# Create the environment:
-COPY environment.yaml .env ./
-RUN conda env create -f environment.yaml
+COPY pyproject.toml poetry.lock .env ./
+
+RUN pip install poetry
+RUN poetry config virtualenvs.create false \
+    && poetry install
 
 COPY toshl_fixer toshl_fixer
 
-CMD conda run -n toshl-fixer gunicorn --bind :${PORT-8080} --workers 1 --threads 8 toshl_fixer.app:app
+# To install cli
+RUN poetry install
+
+CMD gunicorn --bind :${PORT-8080} --workers 1 --threads 8 toshl_fixer.app:app
