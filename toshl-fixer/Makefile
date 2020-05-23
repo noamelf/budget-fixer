@@ -4,7 +4,7 @@ build:
 	docker build -t toshl-fixer -t gcr.io/toshl-fixer/toshl-fixer -t gcr.io/toshl-fixer/toshl-fixer:$(COMMIT) .
 
 push:
-	docker push gcr.io/toshl-fixer/toshl-fixer:latest
+	docker push gcr.io/toshl-fixer/toshl-fixer:$(COMMIT)
 
 deploy:
 	gcloud run deploy toshl-fixer --image gcr.io/toshl-fixer/toshl-fixer:$(COMMIT)
