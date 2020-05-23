@@ -1,15 +1,10 @@
-FROM frolvlad/alpine-miniconda3
-
-RUN apk --update add git less openssh && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm /var/cache/apk/*
+FROM continuumio/miniconda3
 
 WORKDIR /app
 
 # Create the environment:
 COPY environment.yaml .env ./
-RUN conda env create -f environment.yaml \
-    && conda clean -afy
+RUN conda env create -f environment.yaml
 
 COPY toshl_fixer toshl_fixer
 
