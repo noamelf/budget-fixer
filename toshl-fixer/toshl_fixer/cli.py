@@ -1,10 +1,5 @@
 import click
 
-from toshl_fixer.core.delete_credit_entries import delete_credit_entries
-from toshl_fixer.core.delete_duplicates import delete_duplicates
-from toshl_fixer.core.fetch import fetch_data
-from .core.manual_tag import update_tags
-
 
 @click.group(chain=True)
 @click.option(
@@ -19,23 +14,27 @@ def cli(context, from_date, to_date):
 @click.command()
 @click.pass_context
 def tag(context):
+    from .core.manual_tag import update_tags
     update_tags(**context.obj)
 
 
 @click.command()
 def fetch():
+    from toshl_fixer.core.fetch import fetch_data
     fetch_data()
 
 
 @click.command()
 @click.pass_context
 def delete_dup(context):
+    from toshl_fixer.core.delete_duplicates import delete_duplicates
     delete_duplicates(**context.obj)
 
 
 @click.command()
 @click.pass_context
 def delete_visa(context):
+    from toshl_fixer.core.delete_credit_entries import delete_credit_entries
     delete_credit_entries(**context.obj)
 
 

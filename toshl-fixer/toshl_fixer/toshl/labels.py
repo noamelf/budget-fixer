@@ -1,5 +1,5 @@
 from toshl import Category, Tag
-from ..data import labels
+from ..data_access import labels
 from ..settings import client
 
 

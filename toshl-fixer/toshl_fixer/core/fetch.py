@@ -1,6 +1,6 @@
 from datetime import date
 
-from toshl_fixer.data.expenses import write_expenses
+from toshl_fixer.data_access.expenses import write_expenses
 from toshl_fixer.toshl.fetch_expenses import fetch_expenses
 
 

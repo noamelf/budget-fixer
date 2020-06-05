@@ -1,6 +1,6 @@
 import nltk
 
-from ..data import expenses
+from ..data_access import expenses
 
 
 class Classifier:

@@ -6,7 +6,7 @@ from prompt_toolkit import prompt
 from prompt_toolkit.completion import FuzzyWordCompleter
 
 from .infer import tag_naive_bayes, tag_tfidf_tree
-from ..data.expenses import get_not_tagged_expenses
+from ..data_access.expenses import get_not_tagged_expenses
 from ..toshl.entry import update_entry_async
 from ..toshl.labels import LabelMapping
 

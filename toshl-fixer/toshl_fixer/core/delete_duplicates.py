@@ -3,7 +3,7 @@ from difflib import SequenceMatcher
 
 import pandas as pd
 
-from toshl_fixer.data.expenses import get_expenses
+from toshl_fixer.data_access.expenses import get_expenses
 from toshl_fixer.toshl.entry import delete_entry_async
 
 logger = logging.getLogger(__name__)
