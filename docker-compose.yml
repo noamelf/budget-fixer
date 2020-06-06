@@ -1,0 +1,19 @@
+version: '3'
+services:
+  toshl-fixer:
+    image: gcr.io/toshl-fixer/toshl-fixer:latest
+    build: "./toshl-fixer"
+    volumes:
+      - ./toshl-fixer:/app/toshl-fixer
+      - ./data:/app/data
+    environment:
+      - EXPENSE_CLASSIFIER_URL=http://expense-classifier:8000
+    ports:
+      - 5001:8080
+  expense-classifier:
+    image: gcr.io/toshl-fixer/expense-classifier:latest
+    ports:
+      - 5002:8000
+    environment:
+      - DISABLE_NGINX=true
+      - PORT=8000

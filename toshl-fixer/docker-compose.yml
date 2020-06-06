@@ -1,9 +1,0 @@
-version: '3'
-services:
-  toshl-fixer:
-    image: gcr.io/toshl-fixer/toshl-fixer:latest
-    build:
-      context: "."
-    volumes:
-    - ./toshl_fixer:/app/toshl_fixer
-    - ./data_access:/app/data_access

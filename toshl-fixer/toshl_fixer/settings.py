@@ -17,4 +17,4 @@ DATA_DIR = Path(os.getenv('APP_DATA'))
 TOKEN = os.getenv('TOSHL_TOKEN')
 client = ToshlClient(TOKEN)
 
-EXPENSE_CLASSIFIER_URL = os.getenv('EXPENSE_CLASSIFIER_URL')
+EXPENSE_CLASSIFIER_URL = os.getenv('EXPENSE_CLASSIFIER_URL') + '/invocations'
