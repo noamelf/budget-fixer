@@ -40,7 +40,6 @@ def train_model():
     train_set, test_set = get_data_sets()
     classifier = nltk.NaiveBayesClassifier.train(train_set)
     accuracy = nltk.classify.accuracy(classifier, test_set)
-    print(f'{accuracy=}')
     mlflow.log_metric("accuracy", accuracy)
     return classifier
 

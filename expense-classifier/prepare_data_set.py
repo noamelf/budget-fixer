@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import sys
 from sklearn.model_selection import train_test_split
@@ -8,17 +9,13 @@ def _format_for_nltk(row):
 
 
 def _preprocess_data():
-    data_file = sys.argv[1] or '../toshl_fixer/db/expenses.csv'
-    expenses = pd.read_csv(data_file)
-    expenses = expenses[~expenses['desc'].isna()]
-    tagged_expenses = expenses[expenses['desc'].str.contains('🏷')]
-    tagged_expenses['label'] = tagged_expenses['category'] + '/' + tagged_expenses['tag']
-    tagged_expenses['desc'] = tagged_expenses['desc'].str.strip('🏷')
-    tagged_expenses = tagged_expenses[tagged_expenses['amount'] < 0]
-    data_set = tagged_expenses[['desc', 'label']]
-    data_set = data_set.astype('str')
-    data_set = data_set.dropna()
-    return data_set
+    data_file = sys.argv[1]
+    transactions = pd.read_csv(data_file)
+    expenses: pd.DataFrame = transactions[transactions['amount'] < 0]
+    tagged_exp = expenses.dropna(subset=['desc', 'tag', 'category'])
+    tagged_exp['label'] = tagged_exp['category'].str.cat(tagged_exp['tag'], sep='/')
+    data_set = tagged_exp[['desc', 'label']]
+    return data_set.reset_index()
 
 
 def feature_eng(train, test):

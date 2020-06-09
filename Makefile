@@ -1,7 +1,9 @@
 deploy-fixer:
+	docker-compose push toshl-fixer
 	gcloud run deploy toshl-fixer --image gcr.io/toshl-fixer/toshl-fixer:latest
 
 deploy-classifier:
+	docker push gcr.io/toshl-fixer/expense-classifier:latest # since I don't build this image in the compose file, it doesn't want to push it apparently
 	gcloud run deploy expenses-classifier --image gcr.io/toshl-fixer/expense-classifier:latest
 
 deploy-all: deploy-classifier deploy-fixer
