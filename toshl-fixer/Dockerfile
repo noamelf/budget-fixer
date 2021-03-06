@@ -1,6 +1,6 @@
 FROM python:3.8-slim
 
-RUN pip install poetry
+RUN pip install poetry==1.0.5
 
 ENV APP_HOME /app
 ENV APP_DATA $APP_HOME/data
