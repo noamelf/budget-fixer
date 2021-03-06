@@ -20,7 +20,7 @@ def auto_tag():
     expenses: pd.DataFrame = fetch_data()
     untagged_expenses = expenses[~expenses.desc.str.contains('🏷|🤖')].reset_index()
     predictions = predict(untagged_expenses)
-    high_accuracy = predictions[predictions['probability'] > 0.7]
+    high_accuracy = predictions[predictions['probability'] > 0.4]
     logger.debug(f'{high_accuracy=}')
     labeled_expenses = untagged_expenses.merge(high_accuracy, left_index=True, right_index=True)
     labeled_expenses.apply(_update_entries, axis=1)
